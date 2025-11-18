@@ -1,0 +1,19 @@
+meta {
+  name: Chat Message Send
+  type: ws
+  seq: 4
+}
+
+ws {
+  url: ws://{{DOMAIN}}/ws/1?user_id=2?username=bob
+  body: ws
+  auth: inherit
+}
+
+body:ws {
+  name: message 1
+  type: json
+  content: '''
+    {}
+  '''
+}

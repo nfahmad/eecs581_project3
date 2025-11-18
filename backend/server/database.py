@@ -60,7 +60,6 @@ def init_db():
     """Create all tables in the database"""
     Base.metadata.create_all(bind=engine)
 
-
 # Dependency for FastAPI routes
 def get_db():
     """Get database session for FastAPI dependency injection"""

@@ -3,9 +3,9 @@ from server.websocket.manager import manager
 from datetime import datetime
 import json
 
-router = APIRouter(tags=["websocket"])
+router = APIRouter(prefix="/ws", tags=["websocket"])
 
-@router.websocket("/ws/{room_id}")
+@router.websocket("/{room_id}")
 async def websocket_endpoint(
     websocket: WebSocket,
     room_id: int,
@@ -21,7 +21,7 @@ async def websocket_endpoint(
     
     Example: ws://localhost:8000/ws/1?user_id=1&username=john
     """
-    
+
     try:
         # Connect user to room
         await manager.connect(websocket, room_id, user_id, username)
