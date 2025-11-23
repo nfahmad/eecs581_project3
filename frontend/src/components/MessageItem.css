@@ -1,0 +1,35 @@
+.message {
+  padding: 0.2rem 0.5rem;
+  margin-top: 0.2rem;
+  transition: background-color 0.2s;
+}
+
+.user:hover {
+  background-color: var(--bg-highlight);
+}
+
+.message-username {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.message-time {
+  color: var(--fg-gutter);
+  margin-left: 1rem;
+}
+
+.system-info {
+  border-radius: 1rem;
+  border: 1px solid var(--info);
+  background-color: var(--info-bg);
+  padding: 1rem 0.5rem;
+  margin: 1.2rem 0;
+}
+
+.system-info {
+  border-radius: 1rem;
+  border: 1px solid var(--info);
+  background-color: var(--info-bg);
+  padding: 0.5rem 0.8rem;
+  margin: 1.2rem 0;
+}

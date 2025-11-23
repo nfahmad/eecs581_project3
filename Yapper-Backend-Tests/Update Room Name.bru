@@ -1,0 +1,24 @@
+meta {
+  name: Update Room Name
+  type: http
+  seq: 7
+}
+
+patch {
+  url: http://{{DOMAIN}}/room/{{room_id}}/name?val=pepehands
+  body: none
+  auth: inherit
+}
+
+params:query {
+  val: pepehands
+}
+
+vars:pre-request {
+  room_id: 3
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,17 +1,22 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
 
 from server.database import init_db
 from server.websocket.routes import router as ws_router
+from server.user.routes import router as user_router
+from server.room.routes import router as room_router
 
-class ReqUser(BaseModel):
-    name: str
-    email: str
+# Execute before/after the lifetime of the app
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initalize the database
+    init_db()
+    print("Database initialized successfully")
 
-app = FastAPI(title="¥apper")
+    yield
 
+app = FastAPI(title="¥apper", lifespan=lifespan)
 
 test_page = HTMLResponse("""
 <!DOCTYPE html>
@@ -255,16 +260,9 @@ test_page = HTMLResponse("""
 </html>
 """)
 
-# Execute before/after the lifetime of the app
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Initalize the database
-    init_db()
-    print("Database initialized successfully")
-
-    yield
-
 app.include_router(ws_router)
+app.include_router(user_router)
+app.include_router(room_router)
 
 @app.get("/")
 async def index_page():

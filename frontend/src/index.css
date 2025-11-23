@@ -1,0 +1,76 @@
+:root {
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  color-scheme: light dark;
+
+  --dark-bg-dark:      hsl(240 20% 5%);
+  --dark-bg:           hsl(240 20% 10%);
+  --dark-bg-highlight: hsl(240 20% 15%);
+  --dark-fg:           hsl(240 20% 90%);
+  --dark-fg-gutter:    hsl(240 20% 50%);
+  --dark-accent:       hsl(240 60% 45%);
+  --dark-info:         hsl(210 100% 45%);
+  --dark-info-bg:      hsla(210 100% 45% / 0.2);
+  --dark-warn:         hsl(45 100% 45%);
+  --dark-warn-bg:      hsl(45 100% 45% / 0.2);
+  --dark-error:        hsl(0 100% 45%);
+  --dark-error-bg:     hsl(0 100% 45% / 0.2);
+
+  --light-bg-dark:      hsl(240 20% 85%);
+  --light-bg:           hsl(240 20% 90%);
+  --light-bg-highlight: hsl(240 20% 95%);
+  --light-fg:           hsl(240 20% 10%);
+  --light-fg-gutter:    hsl(240 20% 50%);
+  --light-accent:       hsl(240 60% 55%);
+  --light-info:         hsl(210 100% 55%);
+  --light-info-bg:      hsl(210 100% 55% / 0.2);
+  --light-warn:         hsl(45 100% 55%);
+  --light-warn-bg:      hsl(45 100% 55% / 0.2);
+  --light-error:        hsl(0 100% 55%);
+  --light-error-bg:     hsl(0 100% 55% / 0.2);
+
+  --bg-dark:   var(--dark-bg-dark);
+  --bg:        var(--dark-bg);
+  --bg-highlight: var(--dark-bg-highlight);
+  --fg:        var(--dark-fg);
+  --fg-gutter: var(--dark-fg-gutter);
+  --accent:    var(--dark-accent);
+  --info:      var(--dark-info);
+  --info-bg:   var(--dark-info-bg);
+  --warn:      var(--dark-warn);
+  --warn-bg:   var(--dark-warn-bg);
+  --error:     var(--dark-error);
+  --error-bg:  var(--dark-error-bg);
+
+  color: var(--fg);
+  background-color: var(--bg-dark);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-dark:   var(--light-bg-dark);
+    --bg:        var(--light-bg);
+    --bg-highlight: var(--light-bg-highlight);
+    --fg:        var(--light-fg);
+    --fg-gutter: var(--light-fg-gutter);
+    --accent:    var(--light-accent);
+    --info:      var(--light-info);
+    --info-bg:   var(--light-info-bg);
+    --warn:      var(--light-warn);
+    --warn-bg:   var(--light-warn-bg);
+    --error:     var(--light-error);
+    --error-bg:  var(--light-error-bg);
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+

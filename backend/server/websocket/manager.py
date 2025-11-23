@@ -11,7 +11,7 @@ class ConnectionManager:
     async def connect(self, websocket: WebSocket, room_id: int, user_id: int, username: str):
         """Accept WebSocket connection and add to room"""
         await websocket.accept()
-        
+
         if room_id not in self.active_connections:
             self.active_connections[room_id] = []
         
@@ -45,6 +45,7 @@ class ConnectionManager:
         if room_id in self.active_connections:
             disconnected = []
             for connection in self.active_connections[room_id]:
+                print(f"broadcasting to {connection}")
                 try:
                     await connection.send_json(message)
                 except Exception as e:

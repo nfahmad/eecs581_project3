@@ -1,0 +1,58 @@
+.window-container {
+  display: grid;
+  align-content: end;
+  flex: 1;
+  background-color: var(--bg);
+  margin: 1rem;
+  padding: 1rem;
+}
+
+
+.input-container {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+
+  margin: 1rem 0 auto auto;
+  background-color: var(--bg-highlight);
+
+  border-radius: 1rem;
+  border: 1px solid var(--bg);
+  padding: 0.5rem;
+
+  transition: border-color 0.2s;
+}
+
+.input-container:hover {
+  border-color: var(--fg-gutter);
+}
+
+.input-container:focus {
+  border-color: var(--fg-gutter);
+}
+
+.chat-input {
+  width: 100%;
+  background-color: #00000000;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.send-button {
+  border: 1px solid #00000000;
+  border-radius: 99999999px;
+  padding: 10px;
+  background-color: var(--accent);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.send-button:focus {
+  border: 1px solid var(--fg);
+  outline: none;
+  box-shadow: none;
+}
+

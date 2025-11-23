@@ -1,0 +1,24 @@
+meta {
+  name: Create User
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://{{DOMAIN}}/user
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "{{$randomUserName}}",
+    "email": "{{$randomEmail}}",
+    "password": "{{$randomPassword}}"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

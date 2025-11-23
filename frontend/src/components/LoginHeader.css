@@ -1,0 +1,44 @@
+.login-container {
+  background-color: var(--bg);
+  padding: 1rem;
+}
+
+.form-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input {
+  background-color: var(--bg-highlight);
+
+  border-radius: 1rem;
+  border: 1px solid var(--bg);
+  padding: 0.5rem;
+
+  outline: none;
+  box-shadow: none;
+}
+
+.input:hover {
+  border-color: var(--fg-gutter);
+}
+
+.input:focus {
+  border-color: var(--fg-gutter);
+}
+
+.submit-button {
+  border: 1px solid #00000000;
+  border-radius: 99999999px;
+  padding: 10px;
+  background-color: var(--accent);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.submit-button:focus {
+  border: 1px solid var(--fg);
+  outline: none;
+  box-shadow: none;
+}
+
