@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -9,6 +10,11 @@ from server.room.schemas import (
 )
 
 router = APIRouter(prefix="/room", tags=["Rooms"])
+
+@router.get("/")
+async def get_rooms(db: Session = Depends(get_db)) -> List[CreateRoomRes]:
+    rooms = db.query(Room).all()
+    return list(rooms)
 
 @router.post("/")
 async def create_room(room_info: CreateRoomReq, db: Session = Depends(get_db)) -> CreateRoomRes:

@@ -1,0 +1,15 @@
+meta {
+  name: User Login
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://{{DOMAIN}}/login
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

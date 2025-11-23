@@ -12,3 +12,6 @@ class CreateRoomRes(CreateRoomReq):
     id: int
     created_at: datetime
     updated_at: datetime
+
+class GetRoomRes(BaseRoom):
+    id: int

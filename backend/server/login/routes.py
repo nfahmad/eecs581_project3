@@ -6,7 +6,7 @@ from server.login.schemas import LoginReq
 from server.database import get_db, User
 from server.util import verify_password
 
-router = APIRouter(prefix="login", tags=["Login"])
+router = APIRouter(prefix="/login", tags=["Login"])
 
 @router.post("/")
 async def login_user(login_data: LoginReq, db: Session = Depends(get_db)) -> GetUserRes:
@@ -19,6 +19,14 @@ async def login_user(login_data: LoginReq, db: Session = Depends(get_db)) -> Get
         )
 
     if verify_password(user.hashed_password, login_data.password):
-        return
+        return {
+            "username": user.username,
+            "email": user.email,
+            "id": user.id,
+        }
 
+    raise HTTPException(
+        status_code = status.HTTP_400_BAD_REQUEST,
+        detail = "Invalid login"
+    )
 
