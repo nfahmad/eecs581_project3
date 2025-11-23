@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
+import { toast } from 'sonner';
 
 // Types
 interface User {
@@ -46,7 +47,6 @@ interface WebSocketContextType {
   messages: WebSocketMessage[];
   isConnected: boolean;
   activeUsers: User[];
-  error: string | null;
   sendMessage: (content: string) => boolean;
   clearMessages: () => void;
   connect: () => void;
@@ -84,7 +84,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [activeUsers, setActiveUsers] = useState<User[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef<number>(0);
@@ -104,8 +103,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
       ws.onopen = () => {
         console.log('WebSocket connected');
+        toast.info(`Connected to room ${roomId}!`)
         setIsConnected(true);
-        setError(null);
         reconnectAttemptsRef.current = 0;
       };
 
@@ -129,7 +128,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
               setActiveUsers((data as RoomUsersMessage).users);
               break;
             case 'error':
-              setError((data as ErrorMessage).message);
+              toast.error((data as ErrorMessage).message);
               console.error('WebSocket error:', (data as ErrorMessage).message);
               break;
             default:
@@ -142,7 +141,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
       ws.onerror = (event: Event) => {
         console.error('WebSocket error:', event);
-        setError('Connection error occurred');
+        toast.error('Server connection error!')
       };
 
       ws.onclose = (event: CloseEvent) => {
@@ -160,14 +159,14 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             connect();
           }, delay);
         } else {
-          setError('Failed to connect after multiple attempts');
+          toast.error('Failed to connect to server after a few tries :(');
         }
       };
 
       wsRef.current = ws;
     } catch (err) {
       console.error('Error creating WebSocket:', err);
-      setError('Failed to create connection');
+      toast.error('Failed to connect to server :(');
     }
   }, [wsUrl]);
 
@@ -191,7 +190,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const sendMessage = useCallback((content: string): boolean => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
       console.error('WebSocket is not connected');
-      setError('Not connected to server');
+      toast.error('Not connected to server');
       return false;
     }
 
@@ -203,7 +202,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       return true;
     } catch (err) {
       console.error('Error sending message:', err);
-      setError('Failed to send message');
+      toast.error('Failed to send message');
       return false;
     }
   }, []);
@@ -227,7 +226,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     messages,
     isConnected,
     activeUsers,
-    error,
     sendMessage,
     clearMessages,
     connect,

@@ -7,7 +7,7 @@ import './ChatWindow.css';
 
 // TODO: User id prop
 function ChatWindow() {
-  const { sendMessage, messages, error, isConnected } = useWebSocket();
+  const { sendMessage, messages, isConnected } = useWebSocket();
   const [inputVal, setInputVal] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
