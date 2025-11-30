@@ -33,7 +33,7 @@ function App() {
       <div className='app-container'>
         {user && roomId && (
           <WebSocketProvider url="ws://localhost:8000" roomId={roomId} userId={user.id} username={user.username}>
-            <SideWindow onRoomChange={setRoomId} currentRoom={roomId}/>
+            <SideWindow onRoomChange={setRoomId} currentRoom={roomId} currentUser={user.id}/>
             <ChatWindow userId={user.id}/>
           </WebSocketProvider>
         )}

@@ -215,7 +215,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             return;
           }
 
-          setMessages(res_body.map(msg => JSON.parse(msg.content)));
+          const messages = res_body.map(msg => JSON.parse(msg.content));
+          setMessages(messages.filter(msg => msg.type === 'message'));
           return;
         }
 

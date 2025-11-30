@@ -39,3 +39,65 @@
   color: var(--fg-gutter);
 }
 
+.modal-backdrop {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-page {
+  padding: 1rem;
+  background-color: var(--bg);
+  border-radius: 3px;
+  z-index: 1001;
+}
+
+.room-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.room-input {
+  background-color: var(--bg-highlight);
+
+  border-radius: 1rem;
+  border: 1px solid var(--bg);
+  padding: 0.5rem;
+
+  outline: none;
+  box-shadow: none;
+}
+
+.room-input:hover {
+  border-color: var(--fg-gutter);
+}
+
+.room-input:focus {
+  border-color: var(--fg-gutter);
+}
+
+.submit-button {
+  border: 1px solid #00000000;
+  border-radius: 99999999px;
+  padding: 8px;
+  background-color: var(--accent);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.submit-button:focus {
+  border: 1px solid var(--fg);
+  outline: none;
+  box-shadow: none;
+}
+

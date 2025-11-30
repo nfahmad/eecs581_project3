@@ -8,7 +8,8 @@
 
 .form-container {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .input {
@@ -48,4 +49,36 @@
 .logo-container {
   font-size: 1.5rem;
   color: var(--fg);
+}
+
+.modal-backdrop {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-page {
+  padding: 1rem;
+  background-color: var(--bg);
+  border-radius: 3px;
+  z-index: 1001;
+  width: 30%;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-around;
+}
+
+.offhand {
+  background-color: var(--bg-highlight) !important;
 }
