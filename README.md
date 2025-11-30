@@ -12,19 +12,19 @@ A multi-room chatroom for users.
 
 2. Start up the FastAPI dev server
 
-   > [!NOTE]
-   > It is highly recommended to install use [uv](https://github.com/astral-sh/uv) to run the backend server.
-   > 
-   > There is still a `requirements.txt` for legacy purposes.
-   > ```sh
-   > cd yapper/backend
-   > 
-   > python3 -m venv .venv
-   > source .venv/bin/activate
-   > pip install -r requirements.txt
-   > 
-   > fastapi dev server
-   > ```
+> [!NOTE]
+> It is highly recommended to install use [uv](https://github.com/astral-sh/uv) to run the backend server.
+> 
+> There is still a `requirements.txt` for legacy purposes.
+> ```sh
+> cd yapper/backend
+> 
+> python3 -m venv .venv
+> source .venv/bin/activate
+> pip install -r requirements.txt
+> 
+> fastapi dev server
+> ```
  
    ```sh
    cd yapper/backend
@@ -37,3 +37,7 @@ A multi-room chatroom for users.
    cd yapper/frontend
    npm run dev
    ```
+
+Visit the URL for the frontend to interact with the app.
+
+
