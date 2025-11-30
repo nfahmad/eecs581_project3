@@ -4,6 +4,7 @@ import ChatWindow from './components/ChatWindow';
 import LoginHeader from './components/LoginHeader';
 import SideWindow from './components/SideWindow';
 import { WebSocketProvider } from './providers/WebsocketProvider';
+import CalvinHobbes from '../src/assets/calvin.svg?react'
 import './App.css';
 
 export interface User {
@@ -31,11 +32,16 @@ function App() {
 
       <LoginHeader setUser={setUser} />
       <div className='app-container'>
-        {user && roomId && (
+        {user && roomId ? (
           <WebSocketProvider url="ws://localhost:8000" roomId={roomId} userId={user.id} username={user.username}>
             <SideWindow onRoomChange={setRoomId} currentRoom={roomId} currentUser={user.id}/>
             <ChatWindow userId={user.id}/>
           </WebSocketProvider>
+        ) : (
+          <div className="alt-display-container">
+            <CalvinHobbes />
+            There's nothing here...
+          </div>
         )}
       </div>
     </>

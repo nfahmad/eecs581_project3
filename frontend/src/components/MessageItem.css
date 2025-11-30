@@ -10,6 +10,7 @@
 
 .message-username {
   font-weight: 700;
+  color: var(--accent-light);
 }
 
 .current .message-username {

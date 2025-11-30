@@ -2,3 +2,6 @@
 __pycache__/
 *.py[codz]
 *$py.class
+
+# Chat Database file
+chat_app.db

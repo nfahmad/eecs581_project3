@@ -15,6 +15,7 @@
   --dark-fg:           hsl(240 20% 90%);
   --dark-fg-gutter:    hsl(240 20% 50%);
   --dark-accent:       hsl(240 60% 45%);
+  --dark-accent-light: hsl(240 60% 65%);
   --dark-info:         hsl(210 100% 45%);
   --dark-info-bg:      hsla(210 100% 45% / 0.2);
   --dark-warn:         hsl(45 100% 45%);
@@ -28,6 +29,7 @@
   --light-fg:           hsl(240 20% 10%);
   --light-fg-gutter:    hsl(240 20% 50%);
   --light-accent:       hsl(240 60% 55%);
+  --light-accent-light: hsl(240 60% 75%);
   --light-info:         hsl(210 100% 55%);
   --light-info-bg:      hsl(210 100% 55% / 0.2);
   --light-warn:         hsl(45 100% 55%);
@@ -41,6 +43,7 @@
   --fg:        var(--dark-fg);
   --fg-gutter: var(--dark-fg-gutter);
   --accent:    var(--dark-accent);
+  --accent-light: var(--dark-accent-light);
   --info:      var(--dark-info);
   --info-bg:   var(--dark-info-bg);
   --warn:      var(--dark-warn);
@@ -60,6 +63,7 @@
     --fg:        var(--light-fg);
     --fg-gutter: var(--light-fg-gutter);
     --accent:    var(--light-accent);
+    --accent-light: var(--light-accent-light);
     --info:      var(--light-info);
     --info-bg:   var(--light-info-bg);
     --warn:      var(--light-warn);

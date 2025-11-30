@@ -37,7 +37,7 @@ function LoginHeader({ setUser }: LoginHeaderProps) {
       if (res.status === 404) {
         const body = await res.json();
         toast.error(body.detail, {
-          action: <button onClick={() => setModalShown(true)} className="submit-button">Sign Up?</button>
+          action: <button onClick={handleSignUp} className="submit-button">Sign Up?</button>
         })
         return;
       }
@@ -119,6 +119,11 @@ function LoginHeader({ setUser }: LoginHeaderProps) {
     toast.info("Signed out")
   };
 
+  const handleSignUp = () => {
+    setForm("signup")
+    setModalShown(true);
+  }
+
   const handleLogIn = () => {
     setForm("login")
     setModalShown(true);
@@ -181,7 +186,7 @@ function LoginHeader({ setUser }: LoginHeaderProps) {
                     <button type="submit" className="submit-button" disabled={!canLogin()}>
                       Login
                     </button>
-                    <button type="button" className="submit-button offhand" onClick={() => setForm('signup')}>
+                    <button type="button" className="submit-button offhand" onClick={handleSignUp}>
                       Sign Up
                     </button>
                   </span>
@@ -226,7 +231,7 @@ function LoginHeader({ setUser }: LoginHeaderProps) {
                     className="input password"
                   />
                   <span className="button-group">
-                    <button type="button" className="submit-button offhand" onClick={() => setForm('login')}>
+                    <button type="button" className="submit-button offhand" onClick={handleLogIn}>
                       Login
                     </button>
                     <button type="submit" className="submit-button" disabled={!canSignUp()}>
