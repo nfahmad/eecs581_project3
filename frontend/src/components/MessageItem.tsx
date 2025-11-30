@@ -6,10 +6,39 @@ interface MessageItemProps {
   msg: WebSocketMessage;
 };
 
+function formatMessageTimestamp(date: string) {
+  const now = new Date();
+  const messageDate = new Date(date);
+  
+  // Check if the message is from today
+  const isToday = messageDate.getDate() === now.getDate() &&
+                  messageDate.getMonth() === now.getMonth() &&
+                  messageDate.getFullYear() === now.getFullYear();
+  
+  if (isToday) {
+    // Return just the time for today's messages
+    return messageDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  } else {
+    // Return date + time for older messages
+    return messageDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: messageDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    }) + ' at ' + messageDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+}
+
 function MessageItem({ msg, currUser }: MessageItemProps) {
 
-  const dateTime = new Date(msg.timestamp);
-  const timeStamp = dateTime.toLocaleTimeString();
+  const timeStamp = formatMessageTimestamp(msg.timestamp);
 
   switch (msg.type) {
     case "message":

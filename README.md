@@ -11,6 +11,11 @@ A multi-room chatroom for users.
    ```
 
 2. Start up the FastAPI dev server
+ 
+   ```sh
+   cd yapper/backend
+   uv run fastapi dev server
+   ```
 
 > [!NOTE]
 > It is highly recommended to install use [uv](https://github.com/astral-sh/uv) to run the backend server.
@@ -25,11 +30,6 @@ A multi-room chatroom for users.
 > 
 > fastapi dev server
 > ```
- 
-   ```sh
-   cd yapper/backend
-   uv run fastapi dev server
-   ```
 
 3. Start up the React dev server
 
@@ -40,4 +40,8 @@ A multi-room chatroom for users.
 
 Visit the URL for the frontend to interact with the app.
 
+# Features
 
+1. Create user profiles
+2. Chat in different rooms
+3. Create new rooms
