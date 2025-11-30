@@ -1,5 +1,9 @@
-from fastapi import WebSocket
+from json import dumps as json_dump
 from typing import Dict, List
+from fastapi import WebSocket, HTTPException, status
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from server.database import Message
 
 class ConnectionManager:
     def __init__(self):
@@ -40,12 +44,29 @@ class ConnectionManager:
         return None
     
     
-    async def broadcast_to_room(self, room_id: int, message: dict):
+    async def broadcast_to_room(self, db: Session, room_id: int, user_id: int, message: dict):
         """Broadcast message to all connections in a room"""
         if room_id in self.active_connections:
+
+            try:
+                db_message = Message(
+                    content = json_dump(message),
+                    user_id = user_id,
+                    room_id = room_id,
+                )
+                db.add(db_message);
+                db.commit()
+
+            except IntegrityError:
+                # There was an issue with adding the message
+                db.rollback()
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Unable to add message due to database constraints"
+                )
+
             disconnected = []
             for connection in self.active_connections[room_id]:
-                print(f"broadcasting to {connection}")
                 try:
                     await connection.send_json(message)
                 except Exception as e:

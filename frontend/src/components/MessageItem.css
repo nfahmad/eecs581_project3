@@ -10,6 +10,9 @@
 
 .message-username {
   font-weight: 700;
+}
+
+.current .message-username {
   color: var(--accent);
 }
 
@@ -18,18 +21,18 @@
   margin-left: 1rem;
 }
 
-.system-info {
-  border-radius: 1rem;
-  border: 1px solid var(--info);
-  background-color: var(--info-bg);
+.system-info, .system-error {
+  border-radius: 3px;
   padding: 1rem 0.5rem;
   margin: 1.2rem 0;
 }
 
 .system-info {
-  border-radius: 1rem;
   border: 1px solid var(--info);
   background-color: var(--info-bg);
-  padding: 0.5rem 0.8rem;
-  margin: 1.2rem 0;
+}
+
+.system-error {
+  border: 1px solid var(--error);
+  background-color: var(--error-bg);
 }

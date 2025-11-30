@@ -2,10 +2,11 @@ import type { WebSocketMessage } from '../providers/WebsocketProvider';
 import './MessageItem.css';
 
 interface MessageItemProps {
-  msg: WebSocketMessage
+  currUser: number;
+  msg: WebSocketMessage;
 };
 
-function MessageItem({ msg }: MessageItemProps) {
+function MessageItem({ msg, currUser }: MessageItemProps) {
 
   const dateTime = new Date(msg.timestamp);
   const timeStamp = dateTime.toLocaleTimeString();
@@ -13,7 +14,7 @@ function MessageItem({ msg }: MessageItemProps) {
   switch (msg.type) {
     case "message":
       return (
-        <div className={"message user " + (msg.user_id == 2 ? "current" : "")}>
+        <div className={"message user " + (msg.user_id == currUser ? "current" : "")}>
           <span className="message-username">{msg.username}</span><span className="message-time">{timeStamp}</span>
           <br />
           {msg.content}

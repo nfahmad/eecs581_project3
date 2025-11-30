@@ -7,10 +7,11 @@ import "./LoginHeader.css";
 
 interface LoginHeaderProps {
   setUser: (user: User) => void;
-  setRoom: (room: number) => void;
 }
 
 function LoginHeader({ setUser }: LoginHeaderProps) {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [signUpModal, setSignUpModal] = useState(false);
   const [userName, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -30,17 +31,23 @@ function LoginHeader({ setUser }: LoginHeaderProps) {
         })
       });
 
+      if (res.status === 404) {
+        const body = await res.json();
+        toast.error(body.detail, {
+          action: <button onClick={() => setSignUpModal(true)} className="submit-button">Sign Up?</button>
+        })
+        return;
+      }
+
       if (res.body) {
-        const res_body = await res.json();
+        const body = await res.json();
 
-        if (res_body.detail) {
-          toast.error(res_body.detail);
-          return;
-        }
-
-        setUser(res_body as User);
+        const user = body as User;
+        setUser(user);
         setUsername("");
         setPassword("");
+        setLoggedIn(true);
+        // toast.success(`Welcome back ${user.username}!`);
         return;
       }
 
@@ -52,28 +59,46 @@ function LoginHeader({ setUser }: LoginHeaderProps) {
     }  
   }
 
+  const handleSignOut = () => {
+    setUser(null);
+    setLoggedIn(false);
+    toast.info("Signed out")
+  };
+
 
   return (
     <div className="login-container">
-      <form onSubmit={handleFormSubmit} className="form-container">
-        <input
-          type="text" 
-          value={userName}
-          onChange={e => setUsername(e.target.value)}
-          placeholder="Username" 
-          className="input username"
-        />
-        <input
-          type="password" 
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          placeholder="Password" 
-          className="input password"
-        />
-        <button type="submit" className="submit-button">
-          Login
-        </button>
-      </form>
+      <div className="logo-container">
+        ¥apper
+      </div>
+      {loggedIn ? (
+        <button
+          className="submit-button"
+          onClick={handleSignOut}
+        >
+          Sign Out
+        </button> 
+      ) : (
+        <form onSubmit={handleFormSubmit} className="form-container">
+          <input
+            type="text" 
+            value={userName}
+            onChange={e => setUsername(e.target.value)}
+            placeholder="Username" 
+            className="input username"
+          />
+          <input
+            type="password" 
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Password" 
+            className="input password"
+          />
+          <button type="submit" className="submit-button">
+            Login
+          </button>
+        </form>
+      )}
     </div>
   )
 }

@@ -1,21 +1,26 @@
 .window-container {
+  grid-column: 2;
+  grid-template-rows: 1fr auto;
   display: grid;
-  align-content: end;
-  flex: 1;
   background-color: var(--bg);
   margin: 1rem;
   padding: 1rem;
+  border-radius: 3px;
+  height: 85dvh;
 }
 
+.message-container {
+  overflow-y: auto;
+  min-height: 0;
+}
 
 .input-container {
   flex: 1;
   display: flex;
   justify-content: space-between;
-  width: 100%;
   box-sizing: border-box;
 
-  margin: 1rem 0 auto auto;
+  margin-top: 1rem;
   background-color: var(--bg-highlight);
 
   border-radius: 1rem;

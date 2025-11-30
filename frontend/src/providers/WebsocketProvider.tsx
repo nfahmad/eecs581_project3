@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 
-// Types
+// Types (keep all your type definitions the same)
 interface User {
   user_id: number;
   username: string;
@@ -61,10 +61,8 @@ interface WebSocketProviderProps {
   username: string;
 }
 
-// Create WebSocket Context
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
-// Custom hook to use WebSocket
 export const useWebSocket = (): WebSocketContextType => {
   const context = useContext(WebSocketContext);
   if (!context) {
@@ -73,7 +71,6 @@ export const useWebSocket = (): WebSocketContextType => {
   return context;
 };
 
-// WebSocket Provider Component
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ 
   children, 
   url, 
@@ -85,106 +82,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [activeUsers, setActiveUsers] = useState<User[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const reconnectAttemptsRef = useRef<number>(0);
-  const maxReconnectAttempts = 5;
 
-  // Build WebSocket URL
-  const wsUrl = `${url}/ws/${roomId}?user_id=${userId}&username=${encodeURIComponent(username)}`;
-
-  // Connect to WebSocket
-  const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      return; // Already connected
-    }
-
-    try {
-      const ws = new WebSocket(wsUrl);
-
-      ws.onopen = () => {
-        console.log('WebSocket connected');
-        toast.info(`Connected to room ${roomId}!`)
-        setIsConnected(true);
-        reconnectAttemptsRef.current = 0;
-      };
-
-      ws.onmessage = (event: MessageEvent) => {
-        try {
-          const data = JSON.parse(event.data) as WebSocketMessage;
-          
-          switch (data.type) {
-            case 'message':
-              console.log('Recieved message:', data); // REMOVE
-              setMessages((prev) => [...prev, data as ChatMessage]);
-              break;
-            case 'user_joined':
-            case 'user_left':
-              // Only display join/leave if not the current user
-              if (userId !== data.user_id) {
-                setMessages((prev) => [...prev, ({ ...data, isSystem: true } as SystemMessage)]);
-              }
-              break;
-            case 'room_users':
-              setActiveUsers((data as RoomUsersMessage).users);
-              break;
-            case 'error':
-              toast.error((data as ErrorMessage).message);
-              console.error('WebSocket error:', (data as ErrorMessage).message);
-              break;
-            default:
-              console.log('Unknown message type:', data.type);
-          }
-        } catch (err) {
-          console.error('Error parsing message:', err);
-        }
-      };
-
-      ws.onerror = (event: Event) => {
-        console.error('WebSocket error:', event);
-        toast.error('Server connection error!')
-      };
-
-      ws.onclose = (event: CloseEvent) => {
-        console.log('WebSocket disconnected:', event.code, event.reason);
-        setIsConnected(false);
-        wsRef.current = null;
-
-        // Attempt to reconnect
-        if (reconnectAttemptsRef.current < maxReconnectAttempts) {
-          reconnectAttemptsRef.current += 1;
-          const delay = Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000);
-          console.log(`Reconnecting in ${delay}ms... (attempt ${reconnectAttemptsRef.current})`);
-          
-          reconnectTimeoutRef.current = setTimeout(() => {
-            connect();
-          }, delay);
-        } else {
-          toast.error('Failed to connect to server after a few tries :(');
-        }
-      };
-
-      wsRef.current = ws;
-    } catch (err) {
-      console.error('Error creating WebSocket:', err);
-      toast.error('Failed to connect to server :(');
-    }
-  }, [wsUrl]);
-
-  // Disconnect from WebSocket
-  const disconnect = useCallback(() => {
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
-    }
-    
-    if (wsRef.current) {
-      wsRef.current.close();
-      wsRef.current = null;
-    }
-    
-    setIsConnected(false);
-    reconnectAttemptsRef.current = 0;
-  }, []);
 
   // Send message
   const sendMessage = useCallback((content: string): boolean => {
@@ -207,20 +105,150 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     }
   }, []);
 
-  // Clear messages
   const clearMessages = useCallback(() => {
     setMessages([]);
   }, []);
 
-  // Connect on mount
-  useEffect(() => {
-    connect();
+  const connect = useCallback(() => {
+    // Placeholder - actual connection happens in useEffect
+  }, []);
 
-    // Cleanup on unmount
-    return () => {
-      disconnect();
+  const disconnect = useCallback(() => {
+    // Placeholder - actual disconnection happens in useEffect cleanup
+  }, []);
+
+  // Main WebSocket effect
+  useEffect(() => {
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout | null = null;
+    let reconnectAttempts = 0;
+    let shouldReconnect = true; // Flag to control reconnection
+    const maxReconnectAttempts = 5;
+
+    const wsUrl = `${url}/ws/${roomId}?user_id=${userId}&username=${encodeURIComponent(username)}`;
+
+    const connectWs = () => {
+      if (!shouldReconnect) return;
+
+      try {
+        ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
+          if (!shouldReconnect) return;
+          console.log('WebSocket connected');
+          toast.success(`Connected to room ${roomId}!`);
+          setIsConnected(true);
+          reconnectAttempts = 0;
+        };
+
+        ws.onmessage = (event: MessageEvent) => {
+          if (!shouldReconnect) return;
+
+          try {
+            const data = JSON.parse(event.data) as WebSocketMessage;
+
+            switch (data.type) {
+              case 'message':
+                console.log('Received message:', data);
+                setMessages((prev) => [...prev, data as ChatMessage]);
+                break;
+              case 'user_joined':
+              case 'user_left':
+                if (userId !== data.user_id) {
+                  setMessages((prev) => [...prev, { ...data, isSystem: true } as SystemMessage]);
+                }
+                break;
+              case 'room_users':
+                setActiveUsers((data as RoomUsersMessage).users);
+                break;
+              case 'error':
+                toast.error((data as ErrorMessage).message);
+                console.error('WebSocket error:', (data as ErrorMessage).message);
+                break;
+              default:
+                console.log('Unknown message type:', data.type);
+            }
+          } catch (err) {
+            console.error('Error parsing message:', err);
+          }
+        };
+
+        ws.onerror = (event: Event) => {
+          console.error('WebSocket error:', event);
+          toast.error('Server connection error!');
+        };
+
+        ws.onclose = (event: CloseEvent) => {
+          console.log('WebSocket disconnected:', event.code, event.reason);
+          setIsConnected(false);
+
+          // Only reconnect if shouldReconnect is true and under max attempts
+          if (shouldReconnect && reconnectAttempts < maxReconnectAttempts) {
+            reconnectAttempts += 1;
+            const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+            console.log(`Reconnecting in ${delay}ms... (attempt ${reconnectAttempts})`);
+
+            reconnectTimeout = setTimeout(() => {
+              connectWs();
+            }, delay);
+          } else if (shouldReconnect) {
+            toast.error('Failed to connect to server after a few tries :(');
+          }
+        };
+      } catch (err) {
+        console.error('Error creating WebSocket:', err);
+        toast.error('Failed to connect to server :(');
+      }
     };
-  }, [userId, username]);
+
+    const getMessages = async () => {
+      console.log("Getting messages");
+      try {
+        const res = await fetch(`http://localhost:8000/ws/${roomId}/messages`);
+
+        if (res.body) {
+          const res_body = await res.json();
+
+          if (res_body.detail) {
+            toast.error(res_body.detail);
+            return;
+          }
+
+          setMessages(res_body.map(msg => JSON.parse(msg.content)));
+          return;
+        }
+
+        toast.error("Couldn't load previous messages...")
+        setMessages([]);
+
+      } catch (err) {
+        console.log(err);
+        toast.error("Something went wrong trying to load previous messages!")
+        setMessages([]);
+      }
+    };
+
+    getMessages();
+    connectWs();
+
+    // Cleanup
+    return () => {
+      shouldReconnect = false; // Disable reconnection immediately
+
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+
+      if (ws) {
+        ws.close();
+      }
+
+      wsRef.current = null;
+      setIsConnected(false);
+      // setMessages([]);
+    };
+  }, [url, roomId, userId, username]);
 
   const value: WebSocketContextType = {
     messages,
@@ -238,3 +266,4 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     </WebSocketContext.Provider>
   );
 };
+

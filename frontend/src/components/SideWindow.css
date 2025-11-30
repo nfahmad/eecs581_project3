@@ -1,0 +1,41 @@
+.sidebar-container {
+  grid-column: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.room-select-button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  border-radius: 3px;
+  color: var(--fg);
+  background-color: var(--bg);
+  padding: 0.5rem; 
+  margin-bottom: 2px;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.room-select-button:hover {
+  background-color: var(--bg-highlight);
+}
+
+.active-room {
+  color: var(--accent);
+}
+
+.add-room-button {
+  margin-top: 5px;
+  text-align: center;
+  background-color: var(--bg-dark);
+}
+
+.subtitle {
+  margin-top: 0;
+  color: var(--fg-gutter);
+}
+

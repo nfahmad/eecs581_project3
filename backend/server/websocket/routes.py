@@ -1,16 +1,23 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect, Query
+from sqlalchemy.orm import Session
 from server.websocket.manager import manager
+from server.database import Message, get_db
 from datetime import datetime
 import json
 
 router = APIRouter(prefix="/ws", tags=["websocket"])
+
+@router.get("/{room_id}/messages")
+async def get_room_messages(room_id: int, max: int = 100, db: Session = Depends(get_db)):
+    messages = db.query(Message).where(Message.room_id == room_id).limit(max).all()
+    return messages
 
 @router.websocket("/{room_id}")
 async def websocket_endpoint(
     websocket: WebSocket,
     room_id: int,
     user_id: int = Query(...),
-    username: str = Query(...)
+    username: str = Query(...),
 ):
     """
     WebSocket endpoint for real-time chat in a room
@@ -22,13 +29,20 @@ async def websocket_endpoint(
     Example: ws://localhost:8000/ws/1?user_id=1&username=john
     """
 
+    # Get the database connection
+    db = next(get_db())
+
     try:
+
         # Connect user to room
         await manager.connect(websocket, room_id, user_id, username)
 
+
         # Notify the room that someone has joined
         await manager.broadcast_to_room(
+            db,
             room_id,
+            user_id,
             {
                 "type": "user_joined",
                 "user_id": user_id,
@@ -52,7 +66,9 @@ async def websocket_endpoint(
                 
                 # Broadcast message to all users in room
                 await manager.broadcast_to_room(
+                    db,
                     room_id,
+                    user_id,
                     {
                         "type": "message",
                         "content": content,
@@ -71,7 +87,9 @@ async def websocket_endpoint(
         if user_data:
             # Notify room that user left
             await manager.broadcast_to_room(
+                db,
                 room_id,
+                user_id,
                 {
                     "type": "user_left",
                     "user_id": user_data["user_id"],
@@ -80,4 +98,5 @@ async def websocket_endpoint(
                     "message": f"{user_data['username']} left the room :("
                 }
             )
+
 

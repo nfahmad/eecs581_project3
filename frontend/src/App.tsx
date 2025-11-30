@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Toaster } from 'sonner';
 import ChatWindow from './components/ChatWindow';
 import LoginHeader from './components/LoginHeader';
+import SideWindow from './components/SideWindow';
 import { WebSocketProvider } from './providers/WebsocketProvider';
 import './App.css';
 
@@ -18,7 +19,7 @@ function App() {
   return (
     <>
       <Toaster 
-        position='top-right'
+        position='top-center'
         toastOptions={{
           style: {
             backgroundColor: 'var(--bg-highlight)',
@@ -28,12 +29,15 @@ function App() {
         }}
       />
 
-      <LoginHeader setUser={setUser} setRoom={setRoomId}/>
-      {user && roomId && (
-        <WebSocketProvider url="ws://localhost:8000" roomId={roomId} userId={user.id} username={user.username}>
-          <ChatWindow />
-        </WebSocketProvider>
-      )}
+      <LoginHeader setUser={setUser} />
+      <div className='app-container'>
+        {user && roomId && (
+          <WebSocketProvider url="ws://localhost:8000" roomId={roomId} userId={user.id} username={user.username}>
+            <SideWindow onRoomChange={setRoomId} currentRoom={roomId}/>
+            <ChatWindow userId={user.id}/>
+          </WebSocketProvider>
+        )}
+      </div>
     </>
   )
 }

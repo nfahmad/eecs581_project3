@@ -13,8 +13,10 @@ router = APIRouter(prefix="/room", tags=["Rooms"])
 
 @router.get("/")
 async def get_rooms(db: Session = Depends(get_db)) -> List[CreateRoomRes]:
+    print("getting rooms")
     rooms = db.query(Room).all()
-    return list(rooms)
+    print(f"got rooms {rooms}")
+    return rooms
 
 @router.post("/")
 async def create_room(room_info: CreateRoomReq, db: Session = Depends(get_db)) -> CreateRoomRes:
