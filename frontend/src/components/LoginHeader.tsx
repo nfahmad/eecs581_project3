@@ -84,6 +84,10 @@ function LoginHeader({ setUser }: LoginHeaderProps) {
           ),
         });
         return;
+      } else if (res.status === 400) {
+        const body = await res.json();
+        toast.error(body.detail)
+        return;
       }
 
       // If response has a body, parse and treat as logged-in User
