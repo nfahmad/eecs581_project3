@@ -1,11 +1,31 @@
+/*
+Program: EECS 581 Project 3 - Live Chat Application
+File: SideWindow.css
+Description:
+    Provides styles for the room selection sidebar, including:
+      - Layout for scrollable room list
+      - Style feedback for selected vs. inactive rooms
+      - Modal UI for room creation flow
+
+Author: EECS 581 Project 3 Team
+Date: November 23, 2025
+*/
+
+/* ==============================
+   Sidebar Layout
+   Houses list of rooms + add-room button
+   ============================== */
 .sidebar-container {
-  grid-column: 1;
-  overflow-y: auto;
+  grid-column: 1;                 /* First column in overall layout */
+  overflow-y: auto;               /* Scrollable if many rooms */
   padding: 1rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: column;         /* Vertical stacking of room buttons */
 }
 
+/* ==============================
+   Room selection button
+   ============================== */
 .room-select-button {
   border: none;
   outline: none;
@@ -14,59 +34,69 @@
   border-radius: 3px;
   color: var(--fg);
   background-color: var(--bg);
-  padding: 0.5rem; 
+  padding: 0.5rem;
   margin-bottom: 2px;
   text-align: left;
-  transition: background-color 0.2s;
+
+  transition: background-color 0.2s; /* Hover feedback */
 }
 
+/* Hover state for better discoverability */
 .room-select-button:hover {
   background-color: var(--bg-highlight);
 }
 
+/* Style for currently selected room */
 .active-room {
-  color: var(--accent);
+  color: var(--accent);           /* Uses theme accent to stand out */
 }
 
+/* Add-room shortcut button (dark style to differentiate action) */
 .add-room-button {
   margin-top: 5px;
   text-align: center;
   background-color: var(--bg-dark);
 }
 
+/* Section subtitles such as “Rooms” */
 .subtitle {
   margin-top: 0;
   color: var(--fg-gutter);
 }
 
+/* ==============================
+   Modal Window: Add Room UI
+   ============================== */
 .modal-backdrop {
-  z-index: 1000;
+  z-index: 1000;                  /* Above app UI */
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
 
   display: flex;
-  align-items: center;
+  align-items: center;            /* Center modal in view */
   justify-content: center;
 
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
 }
 
 .modal-page {
   padding: 1rem;
   background-color: var(--bg);
   border-radius: 3px;
-  z-index: 1001;
+  z-index: 1001;                  /* Above dimmer backdrop */
 }
 
+/* ==============================
+   Add Room Form
+   ============================== */
 .room-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1rem;                       /* Cleanly spaced form fields */
 }
 
+/* Room name input */
 .room-input {
   background-color: var(--bg-highlight);
 
@@ -78,20 +108,22 @@
   box-shadow: none;
 }
 
-.room-input:hover {
-  border-color: var(--fg-gutter);
-}
-
+/* Standardized focus and hover feedback */
+.room-input:hover,
 .room-input:focus {
   border-color: var(--fg-gutter);
 }
 
+/* ==============================
+   Form submit button (reuse style)
+   ============================== */
 .submit-button {
-  border: 1px solid #00000000;
-  border-radius: 99999999px;
+  border: 1px solid #00000000;     /* Only visible on focus */
+  border-radius: 99999999px;       /* Rounded pill shape */
   padding: 8px;
   background-color: var(--accent);
   cursor: pointer;
+
   transition: border-color 0.2s;
 }
 
