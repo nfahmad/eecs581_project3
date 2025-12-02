@@ -1,28 +1,50 @@
+/*
+Program: EECS 581 Project 3 - Live Chat Application
+File: LoginHeader.css
+Description:
+    Defines styling for the login header component as well as modal-based
+    login/register UI elements. Includes container layout, input styling,
+    button appearance, and modal overlay handling.
+
+Author: EECS 581 Project 3 Team
+Date: November 23, 2025
+*/
+
+/* ==============================
+   Top login header bar layout
+   ============================== */
 .login-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between;  /* Logo on left, login button on right */
   align-items: center;
   background-color: var(--bg);
-  padding: 1rem;
+  padding: 1rem;                   /* Adds breathing room for UI elements */
 }
 
+/* ==============================
+   Login/Sign-up modal form layout
+   ============================== */
 .form-container {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-direction: column;          /* Stack form fields vertically */
+  gap: 1rem;                       /* Consistent spacing between inputs */
 }
 
+/* ==============================
+   Reusable form text input styling
+   ============================== */
 .input {
   background-color: var(--bg-highlight);
 
-  border-radius: 1rem;
+  border-radius: 1rem;             /* Rounded style for clean modern UI */
   border: 1px solid var(--bg);
   padding: 0.5rem;
 
   outline: none;
-  box-shadow: none;
+  box-shadow: none;                /* Remove default browser styles */
 }
 
+/* Hover/focus effects for better UX and accessibility feedback */
 .input:hover {
   border-color: var(--fg-gutter);
 }
@@ -31,28 +53,39 @@
   border-color: var(--fg-gutter);
 }
 
+/* ==============================
+   Submit login/register button
+   Circular style to match app theme
+   ============================== */
 .submit-button {
-  border: 1px solid #00000000;
-  border-radius: 99999999px;
+  border: 1px solid #00000000;     /* Transparent border until focus */
+  border-radius: 99999999px;       /* Perfectly circular */
   padding: 8px;
-  background-color: var(--accent);
+  background-color: var(--accent); /* Primary action color */
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s;   /* Smooth interaction feel */
 }
 
+/* Focus state improves usability for keyboard-only users */
 .submit-button:focus {
   border: 1px solid var(--fg);
   outline: none;
   box-shadow: none;
 }
 
+/* ==============================
+   App Logo style (title text)
+   ============================== */
 .logo-container {
   font-size: 1.5rem;
   color: var(--fg);
 }
 
+/* ==============================
+   Modal overlay + dialog window
+   ============================== */
 .modal-backdrop {
-  z-index: 1000;
+  z-index: 1000;                    /* Sit above app UI */
   position: absolute;
   top: 0;
   bottom: 0;
@@ -60,25 +93,29 @@
   right: 0;
 
   display: flex;
-  align-items: center;
+  align-items: center;              /* Center dialog horizontally + vertically */
   justify-content: center;
 
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmed backdrop */
 }
 
 .modal-page {
   padding: 1rem;
   background-color: var(--bg);
   border-radius: 3px;
-  z-index: 1001;
-  width: 30%;
+  z-index: 1001;                    /* Above backdrop */
+  width: 30%;                       /* Responsive width for modal */
 }
 
+/* ==============================
+   Group container for modal buttons
+   ============================== */
 .button-group {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-around;    /* Even button spacing */
 }
 
+/* Used to visually de-emphasize secondary modal buttons */
 .offhand {
   background-color: var(--bg-highlight) !important;
 }
