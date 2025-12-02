@@ -1,14 +1,34 @@
+/*
+Program: EECS 581 Project 3 - Live Chat Application
+File: index.css
+Description:
+    Defines global CSS variables and base UI theme styles for the entire app.
+    Uses CSS custom properties to support both:
+      - Dark mode (default)
+      - Light mode when user's OS theme preference is light
+
+    Includes font rendering optimizations and a reset for HTML/body spacing.
+
+Author: EECS 581 Project 3 Team
+Date: November 23, 2025
+*/
+
+/* ==============================
+   Global root variables (default: dark theme)
+   ============================== */
 :root {
+  /* Typography & font rendering enhancements */
   line-height: 1.5;
   font-weight: 400;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Enables automatic switching based on OS preference */
   color-scheme: light dark;
 
+  /* Dark Theme Values */
   --dark-bg-dark:      hsl(240 20% 5%);
   --dark-bg:           hsl(240 20% 10%);
   --dark-bg-highlight: hsl(240 20% 15%);
@@ -23,6 +43,7 @@
   --dark-error:        hsl(0 100% 45%);
   --dark-error-bg:     hsl(0 100% 45% / 0.2);
 
+  /* Light Theme Values */
   --light-bg-dark:      hsl(240 20% 85%);
   --light-bg:           hsl(240 20% 90%);
   --light-bg-highlight: hsl(240 20% 95%);
@@ -37,6 +58,7 @@
   --light-error:        hsl(0 100% 55%);
   --light-error-bg:     hsl(0 100% 55% / 0.2);
 
+  /* Default theme assignment (dark mode) */
   --bg-dark:   var(--dark-bg-dark);
   --bg:        var(--dark-bg);
   --bg-highlight: var(--dark-bg-highlight);
@@ -51,10 +73,14 @@
   --error:     var(--dark-error);
   --error-bg:  var(--dark-error-bg);
 
+  /* Apply theme colors globally */
   color: var(--fg);
   background-color: var(--bg-dark);
 }
 
+/* ==============================
+   Light mode override based on user preference
+   ============================== */
 @media (prefers-color-scheme: light) {
   :root {
     --bg-dark:   var(--light-bg-dark);
@@ -73,6 +99,10 @@
   }
 }
 
+/* ==============================
+   Reset margin + padding for base elements
+   Prevents default browser whitespace
+   ============================== */
 html, body {
   margin: 0;
   padding: 0;
