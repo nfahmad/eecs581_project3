@@ -1,63 +1,97 @@
+/* 
+Program: EECS 581 Project 3 - Live Chat Application
+File: ChatWindow.css
+Description:
+    Defines the layout and styling for the Chat Window component,
+    including message display area and message input controls.
+
+Author: EECS 581 Project 3 Team
+Date: November 23, 2025
+*/
+
+/* ===========================
+   Main chat window container
+   =========================== */
 .window-container {
-  grid-column: 2;
-  grid-template-rows: 1fr auto;
-  display: grid;
-  background-color: var(--bg);
+  grid-column: 2;                   /* Occupies the second column of parent grid layout */
+  grid-template-rows: 1fr auto;     /* Upper section for messages, lower for input */
+  display: grid;                    /* Grid layout makes resizing cleaner */
+  background-color: var(--bg);      /* Theme-based background color */
   margin: 1rem;
   padding: 1rem;
-  border-radius: 3px;
-  height: 88dvh;
+  border-radius: 3px;               /* Slight rounding for cleaner UI */
+  height: 88dvh;                    /* Dynamic viewport height for full vertical fit */
 }
 
+/* ===========================
+   Scrollable chat messages area
+   =========================== */
 .message-container {
-  overflow-y: auto;
-  min-height: 0;
+  overflow-y: auto;                 /* Allows scrolling through chat history */
+  min-height: 0;                    /* Prevents element from forcing height overflow */
 }
 
+/* ===========================
+   User input + send button area
+   Stays pinned at bottom
+   =========================== */
 .input-container {
   flex: 1;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between;   /* Keep input and button side-by-side */
   box-sizing: border-box;
-
   margin-top: 1rem;
-  background-color: var(--bg-highlight);
+
+  background-color: var(--bg-highlight);  /* Slight contrast for visibility */
 
   border-radius: 1rem;
   border: 1px solid var(--bg);
   padding: 0.5rem;
 
-  transition: border-color 0.2s;
+  transition: border-color 0.2s;    /* Smooth hover/focus effect */
 }
 
+/* Hover state highlights border */
 .input-container:hover {
   border-color: var(--fg-gutter);
 }
 
+/* Focus state for accessibility cues */
 .input-container:focus {
   border-color: var(--fg-gutter);
 }
 
+/* ===========================
+   Text input field
+   Expands to fill available row space
+   =========================== */
 .chat-input {
   width: 100%;
-  background-color: #00000000;
+  background-color: #00000000;      /* Transparent background (keep theme) */
   border: none;
   outline: none;
   box-shadow: none;
 }
 
+/* ===========================
+   Send message button
+   Circular action button
+   =========================== */
 .send-button {
-  border: 1px solid #00000000;
-  border-radius: 99999999px;
+  border: 1px solid #00000000;      /* Invisible border until focus */
+  border-radius: 99999999px;        /* Perfect circle */
   padding: 10px;
-  background-color: var(--accent);
+  background-color: var(--accent);  /* Themed action color */
   cursor: pointer;
-  transition: border-color 0.2s;
+
+  transition: border-color 0.2s;    /* Feedback on focus */
 }
 
+/* Focus style improves navigation for keyboard users */
 .send-button:focus {
   border: 1px solid var(--fg);
   outline: none;
   box-shadow: none;
 }
+
 
