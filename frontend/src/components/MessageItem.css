@@ -1,38 +1,68 @@
+/*
+Program: EECS 581 Project 3 - Live Chat Application
+File: MessageItem.css
+Description:
+    Defines the appearance of an individual message bubble in the chat UI.
+    Supports styling for user messages, system notifications, timestamps,
+    and distinguishing the current user's messages visually.
+
+Author: EECS 581 Project 3 Team
+Date: November 23, 2025
+*/
+
+/* ==============================
+   Default message bubble style
+   ============================== */
 .message {
-  padding: 0.2rem 0.5rem;
-  margin-top: 0.2rem;
-  transition: background-color 0.2s;
+  padding: 0.2rem 0.5rem;        /* Compact padding for tight chat thread */
+  margin-top: 0.2rem;            /* Slight spacing between messages */
+  transition: background-color 0.2s;  /* Smooth hover interaction */
 }
 
+/* Highlight effect when hovering over user messages */
 .user:hover {
   background-color: var(--bg-highlight);
 }
 
+/* ==============================
+   Username + sender identity
+   ============================== */
 .message-username {
-  font-weight: 700;
-  color: var(--accent-light);
+  font-weight: 700;              /* Emphasize username */
+  color: var(--accent-light);    /* Subtle accent tone */
 }
 
+/* Highlight the current user's own username for clarity */
 .current .message-username {
-  color: var(--accent);
+  color: var(--accent);          /* Stronger accent for self messages */
 }
 
+/* ==============================
+   Timestamp info under username
+   ============================== */
 .message-time {
-  color: var(--fg-gutter);
-  margin-left: 1rem;
+  color: var(--fg-gutter);       /* Low-contrast text for subtle appearance */
+  margin-left: 1rem;             /* Spacing away from username text */
 }
 
-.system-info, .system-error {
+/* ==============================
+   System message styles
+   Used for join/leave notifications, errors, etc.
+   ============================== */
+.system-info,
+.system-error {
   border-radius: 3px;
   padding: 1rem 0.5rem;
-  margin: 1.2rem 0;
+  margin: 1.2rem 0;              /* Extra spacing to separate from user msgs */
 }
 
+/* Informational notifications (user joined) */
 .system-info {
   border: 1px solid var(--info);
   background-color: var(--info-bg);
 }
 
+/* Error notifications (failed connection, server errors) */
 .system-error {
   border: 1px solid var(--error);
   background-color: var(--error-bg);
