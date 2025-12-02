@@ -1,9 +1,48 @@
+/**
+ * Program: EECS 581 Project 3 - Live Chat Application
+ * File: WebsocketProvider.tsx
+ * Description:
+ *    Provides a React Context wrapper around the browser WebSocket API
+ *    for the entire application. It is responsible for:
+ *      - Opening and managing a WebSocket connection to the backend.
+ *      - Automatically reconnecting on disconnect (with backoff & cap).
+ *      - Fetching previous chat messages for the current room on mount.
+ *      - Exposing:
+ *          • messages (chat + system)
+ *          • isConnected flag
+ *          • activeUsers in the room (if server sends this)
+ *          • sendMessage() API for components
+ *          • clearMessages(), connect(), disconnect() placeholders
+ *
+ * Inputs (props):
+ *    - children: ReactNode
+ *          Components that will consume the WebSocket context.
+ *    - url: string
+ *          Base URL of the backend server (without /ws/...).
+ *    - roomId: number
+ *          ID of the room to connect to via WebSocket.
+ *    - userId: number
+ *          ID of the current user; sent as query parameter when connecting.
+ *    - username: string
+ *          Username of the current user; also sent in query parameters.
+ *
+ * Outputs:
+ *    - React Context that can be consumed via useWebSocket() hook.
+ *    - Real-time UI updates driven by WebSocket messages.
+ *
+ * Author: EECS 581 Project 3 Team
+ * Date: November 23, 2025
+ */
+
 import type { ReactNode } from 'react';
 
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 
-// Types (keep all your type definitions the same)
+// =========================
+// Type Definitions
+// =========================
+
 interface User {
   user_id: number;
   username: string;
@@ -28,7 +67,7 @@ interface SystemMessage extends BaseMessage {
   user_id: number;
   username: string;
   message: string;
-  isSystem?: boolean;
+  isSystem?: boolean; // Flag used client-side to identify system messages
 }
 
 interface RoomUsersMessage extends BaseMessage {
@@ -41,8 +80,10 @@ interface ErrorMessage extends BaseMessage {
   message: string;
 }
 
+// Union type for all possible WebSocket messages the client handles
 export type WebSocketMessage = ChatMessage | SystemMessage | RoomUsersMessage | ErrorMessage;
 
+// Shape of values exposed through the WebSocket context
 interface WebSocketContextType {
   messages: WebSocketMessage[];
   isConnected: boolean;
@@ -61,8 +102,16 @@ interface WebSocketProviderProps {
   username: string;
 }
 
+// =========================
+// Context + Hook
+// =========================
+
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
+/**
+ * Custom hook for consuming the WebSocket context.
+ * Ensures a helpful error is thrown if used outside of the provider.
+ */
 export const useWebSocket = (): WebSocketContextType => {
   const context = useContext(WebSocketContext);
   if (!context) {
@@ -71,6 +120,10 @@ export const useWebSocket = (): WebSocketContextType => {
   return context;
 };
 
+// =========================
+// Provider Component
+// =========================
+
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ 
   children, 
   url, 
@@ -78,13 +131,24 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   userId, 
   username 
 }) => {
+  // All messages currently in view (loaded history + live)
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
+
+  // Whether the WebSocket is currently open and ready
   const [isConnected, setIsConnected] = useState<boolean>(false);
+
+  // Active users in the room (if server sends room_users)
   const [activeUsers, setActiveUsers] = useState<User[]>([]);
+
+  // Mutable reference to the actual WebSocket instance
   const wsRef = useRef<WebSocket | null>(null);
 
-
-  // Send message
+  /**
+   * Send a chat message to the server over WebSocket.
+   * Returns:
+   *   - true  if the message was successfully queued for sending
+   *   - false if the socket is not open or if there was an error.
+   */
   const sendMessage = useCallback((content: string): boolean => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
       console.error('WebSocket is not connected');
@@ -93,10 +157,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     }
 
     try {
-      wsRef.current.send(JSON.stringify({
-        content,
-        type: 'message'
-      }));
+      wsRef.current.send(
+        JSON.stringify({
+          content,
+          type: 'message',
+        })
+      );
       return true;
     } catch (err) {
       console.error('Error sending message:', err);
@@ -105,28 +171,50 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     }
   }, []);
 
+  /**
+   * Clear messages from local state.
+   * Does NOT affect server-side history.
+   */
   const clearMessages = useCallback(() => {
     setMessages([]);
   }, []);
 
+  /**
+   * Optional manual connect API (currently a placeholder).
+   * Actual connection is created automatically in useEffect.
+   */
   const connect = useCallback(() => {
     // Placeholder - actual connection happens in useEffect
   }, []);
 
+  /**
+   * Optional manual disconnect API (currently a placeholder).
+   * Actual disconnection happens in useEffect cleanup.
+   */
   const disconnect = useCallback(() => {
     // Placeholder - actual disconnection happens in useEffect cleanup
   }, []);
 
-  // Main WebSocket effect
+  // =========================
+  // Main WebSocket lifecycle effect
+  // =========================
+
   useEffect(() => {
     let ws: WebSocket | null = null;
     let reconnectTimeout: NodeJS.Timeout | null = null;
     let reconnectAttempts = 0;
-    let shouldReconnect = true; // Flag to control reconnection
-    const maxReconnectAttempts = 5;
+    let shouldReconnect = true;       // Controls whether reconnection is allowed
+    const maxReconnectAttempts = 5;   // Safety cap on retries
 
-    const wsUrl = `${url}/ws/${roomId}?user_id=${userId}&username=${encodeURIComponent(username)}`;
+    // Compose WebSocket URL with room + user identity info
+    const wsUrl = `${url}/ws/${roomId}?user_id=${userId}&username=${encodeURIComponent(
+      username
+    )}`;
 
+    /**
+     * Helper function to encapsulate WebSocket creation and event wiring.
+     * Supports exponential backoff reconnection on close events.
+     */
     const connectWs = () => {
       if (!shouldReconnect) return;
 
@@ -134,14 +222,16 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
+        // Fired when the WebSocket handshake completes
         ws.onopen = () => {
           if (!shouldReconnect) return;
           console.log('WebSocket connected');
           toast.success(`Connected to room ${roomId}!`);
           setIsConnected(true);
-          reconnectAttempts = 0;
+          reconnectAttempts = 0; // Reset attempts on successful connection
         };
 
+        // Fired on any message from the server
         ws.onmessage = (event: MessageEvent) => {
           if (!shouldReconnect) return;
 
@@ -153,19 +243,27 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
                 console.log('Received message:', data);
                 setMessages((prev) => [...prev, data as ChatMessage]);
                 break;
+
               case 'user_joined':
               case 'user_left':
-                if (userId !== data.user_id) {
-                  setMessages((prev) => [...prev, { ...data, isSystem: true } as SystemMessage]);
+                // Only show system join/leave for other users
+                if (userId !== (data as SystemMessage).user_id) {
+                  setMessages((prev) => [
+                    ...prev,
+                    { ...(data as SystemMessage), isSystem: true } as SystemMessage,
+                  ]);
                 }
                 break;
+
               case 'room_users':
                 setActiveUsers((data as RoomUsersMessage).users);
                 break;
+
               case 'error':
                 toast.error((data as ErrorMessage).message);
                 console.error('WebSocket error:', (data as ErrorMessage).message);
                 break;
+
               default:
                 console.log('Unknown message type:', data.type);
             }
@@ -174,16 +272,18 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           }
         };
 
+        // Fired when the browser detects an error with the WS connection
         ws.onerror = (event: Event) => {
           console.error('WebSocket error:', event);
           toast.error('Server connection error!');
         };
 
+        // Fired when the connection is closed (cleanly or not)
         ws.onclose = (event: CloseEvent) => {
           console.log('WebSocket disconnected:', event.code, event.reason);
           setIsConnected(false);
 
-          // Only reconnect if shouldReconnect is true and under max attempts
+          // Reconnect with exponential backoff if allowed and not exceeded attempts
           if (shouldReconnect && reconnectAttempts < maxReconnectAttempts) {
             reconnectAttempts += 1;
             const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
@@ -193,6 +293,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
               connectWs();
             }, delay);
           } else if (shouldReconnect) {
+            // Reached max attempts but still allowed to reconnect logically
             toast.error('Failed to connect to server after a few tries :(');
           }
         };
@@ -202,6 +303,10 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       }
     };
 
+    /**
+     * Fetch previous messages for the current room from REST endpoint.
+     * This runs once on mount/room change before live WebSocket events.
+     */
     const getMessages = async () => {
       console.log("Getting messages");
       try {
@@ -215,42 +320,51 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             return;
           }
 
-          const messages = res_body.map(msg => JSON.parse(msg.content));
-          setMessages(messages.filter(msg => msg.type === 'message'));
+          // Each message row from DB stores serialized JSON in content.
+          // Parse each and keep only normal 'message' types for the UI.
+          const messages = res_body.map((msg: { content: string }) =>
+            JSON.parse(msg.content)
+          );
+          setMessages(messages.filter((msg: WebSocketMessage) => msg.type === 'message'));
           return;
         }
 
-        toast.error("Couldn't load previous messages...")
+        toast.error("Couldn't load previous messages...");
         setMessages([]);
-
       } catch (err) {
         console.log(err);
-        toast.error("Something went wrong trying to load previous messages!")
+        toast.error('Something went wrong trying to load previous messages!');
         setMessages([]);
       }
     };
 
+    // Initial history load + live connection
     getMessages();
     connectWs();
 
-    // Cleanup
+    // Cleanup when component unmounts or when dependencies change
     return () => {
-      shouldReconnect = false; // Disable reconnection immediately
+      // Prevent further reconnection attempts
+      shouldReconnect = false;
 
+      // Cancel any pending reconnect timeout
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
       }
 
+      // Gracefully close the current WebSocket connection
       if (ws) {
         ws.close();
       }
 
       wsRef.current = null;
       setIsConnected(false);
+      // Optionally could clear messages here if desired:
       // setMessages([]);
     };
   }, [url, roomId, userId, username]);
 
+  // Value exposed to all components inside the provider
   const value: WebSocketContextType = {
     messages,
     isConnected,
@@ -267,4 +381,3 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     </WebSocketContext.Provider>
   );
 };
-
