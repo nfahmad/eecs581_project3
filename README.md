@@ -35,7 +35,8 @@ A multi-room chatroom for users.
 
    ```sh
    cd yapper/frontend
-   npm run dev
+   npm i        # Install packages
+   npm run dev  # Run the development server
    ```
 
 Visit the URL for the frontend to interact with the app.
