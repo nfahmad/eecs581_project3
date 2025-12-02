@@ -1,27 +1,58 @@
+/*
+Program: EECS 581 Project 3 - Live Chat Application
+File: App.css
+Description:
+    Defines the core layout for the entire single-page chat application.
+    Uses CSS Grid to divide UI into:
+        - Sidebar (Room list)
+        - Chat window + input area
+    Disables page overflow scrolling to ensure a clean, fixed layout.
+
+Author: EECS 581 Project 3 Team
+Date: November 23, 2025
+*/
+
+/* ==============================
+   Root wrapper for the entire page
+   Provides a vertical flex structure so header + content fill screen
+   ============================== */
 #root {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
-  min-width: 100dvw;
-  overflow: hidden; /* No page scroll at all */
+  min-height: 100dvh;  /* Full dynamic viewport height */
+  min-width: 100dvw;   /* Full dynamic viewport width */
+  overflow: hidden;    /* Prevent browser scrolling (controlled in components) */
 
   font-family: 'Courier New', Courier, monospace;
 }
 
+/* ==============================
+   Main app container
+   Two-column grid: Sidebar + Chat Window
+   ============================== */
 .app-container {
   position: relative;
   display: grid;
-  overflow: hidden;
-  grid-template-columns: 250px 1fr;
-  grid-template-rows: 1fr auto;
+  overflow: hidden;     /* Chat overflow handled inside chat containers */
+
+  grid-template-columns: 250px 1fr; /* Fixed sidebar width + flexible chat area */
+  grid-template-rows: 1fr auto;     /* Main scroll area + footer input area */
+
   gap: 0;
-  flex: 1;
+  flex: 1;              /* Consume remaining viewport height */
 }
 
+/* ==============================
+   Fallback / Waiting Display
+   Centered message for cases such as:
+     - User not logged in
+     - No room selected
+   ============================== */
 .alt-display-container {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--fg-gutter);
+  transform: translate(-50%, -50%); /* Perfect centering */
+  color: var(--fg-gutter);          /* Low contrast, secondary text */
 }
+
